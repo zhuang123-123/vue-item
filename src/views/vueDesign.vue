@@ -66,7 +66,7 @@
         watch: {
             cascaderValue(val) {
                 console.log(val)
-            }
+            } 
         }
     }
 </script>
