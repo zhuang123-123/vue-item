@@ -159,10 +159,81 @@ export default {
     },
     methods: {
         initData() {
-            getConfigDict('yesNo').then(res => {  // 获取是否信息流类型
-
+            getConfigDict('yesNo').then(res => {  // 获取是否信息流类型广告状态  0-否； 1-是
+                this.feedsList = res;
             })
+        },
+        handleReset() {
+            this.$emit('on-submit');
+        },
+        handleAdd() {
+            this.modal2 = true;
+            this.modalType = 'add';
+            getFloorDetails({
+                allContent: this.id
+            }).then(res => {
+                this.formData = {
+                    appName: res.data.data.list[0].appName,
+                    isFeeds: res.data.data.list[0].isFeeds,
+                    slotName: res.data.data.list[0].slotName,
+                    slotId: res.data.data.list[0].slotId,
+                    id: res.data.data.list[0].id,
+                    modalType: 'add'
+                }
+            })
+        },
+        submit(val) {
+            if (val == 'on') this.getList();
+            this.formData = {};
+            this.modal2 = false;
+        },
+        getList() {
+            selectSspFloorPriceRemarkById({id: this.id, allContent: this.params.qid || ''}).then(res => {
+                this.tableData = res.data.data || [];
+                this.tableData.map(res => {
+                    if (res.qid === 'all' && res.pgnum === '0' && res.idx === '0') {
+                        const obj = this.tableData.indexOf(res);
+                        this.tableData.splice(objj, 1);
+                        this.tableData.unshift(res);
+                    }
+                })
+                if (this.tableData.length) {
+                    this.fromList = res.data.data[0];
+                    this.fromList.isFeedsStr = this.feedsList.find(s => s.code == this.fromList.isFeeds).name || ''
+                }
+            })
+        },
+        resetList() {
+            this.params = {
+                qid: ''
+            },
+            this.getList();
+        },
+        selectChannel() {
+            getSspQidName({appid: this.id}).then(res => {
+                this.qidList = [];
+                const arr = [];
+                res.data.data.map(item => {
+                    if (arr.indexOf(item.value) == -1) {
+                        const obj = {
+                            key: item.value,
+                            value: item.value
+                        }
+                        arr.push(item.value);
+                        this.qidList.push(obj);
+                    }
+                })
+            })
+        }
+    },
+    watch: {
+        data(val) {
+            this.id = val.id;
+            this.getList();
+            this.selectChannel();
         }
     }
 }
 </script>
+<style lang="less" scoped>
+</style>
