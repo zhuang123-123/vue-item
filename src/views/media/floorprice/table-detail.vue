@@ -108,18 +108,60 @@ export default {
                                                         this.formData.mpdalType = 'edit_other';
                                                     } else {
                                                         this.formData.modalType = 'edit';
-                                                        this
+                                                        this.modalType = 'edit';
                                                     }
+                                                    this.modal2 = true;
                                                 }
                                             })
                                         }
                                     }
-                                }
+                                },
+                                '编辑'
+                            ),h('span',
+                                {
+                                    style: {
+                                        cursor: 'pointer',
+                                        marginRight: '10px',
+                                        color: '@2d8cf0'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            if (params.row.qid === 'all' && params.row.pgnum === '0' && params.row.idx === '0') {
+                                                return ;
+                                            }
+                                            this.$Modal.confirm({
+                                                title: '提示',
+                                                content: '确认要删除吗',
+                                                onOk: () => {
+                                                    deleteSspFloorPriceByid(params.row.id).then(res => {
+                                                        this.$Message.success('删除成功');
+                                                        this.getList();
+                                                    })
+                                                },
+                                                cancelText: '取消'
+                                            })
+                                        }
+                                    }
+                                },
+                                (params.row.qid === 'all' && params.row.pgnum === '0' && params.row.idx === '0') ? '' : '删除'
                             )
                         ])
                     }
                 }
-            ]
+            ],
+            id: '',
+            tableData: [],
+            feedsList: []  // 是否信息流类型广告
+        }
+    },
+    mounted() {
+        this.initData()
+    },
+    methods: {
+        initData() {
+            getConfigDict('yesNo').then(res => {  // 获取是否信息流类型
+
+            })
         }
     }
 }

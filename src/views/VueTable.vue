@@ -44,10 +44,16 @@
 
 
         <!-- iview-table -->
-        <Table border :columns="columns7" :data="data6"></Table>
+        <Table border :columns="columns7" :data="data6" id="exportTable"></Table>
+        <div>
+            <Button @click="exportExce">导出</Button>
+        </div>
+        <!-- <button @click="exportExce">导出</button> -->
     </div>
 </template>
 <script>
+  import FileSaver from 'file-saver'
+  import XLSX from 'xlsx'
   export default {
     data() {
       return {
@@ -187,6 +193,21 @@
                     return [0, 0]
                 }
             }
+        },
+        exportExce() {
+            console.log(123)
+            var xlsxParam = { raw: true } // 导出的内容只做解析，不进行格式转换
+            var wb = XLSX.utils.table_to_book(document.querySelector('#exportTable'), xlsxParam);
+
+            var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'array' })
+            try {
+                FileSaver.saveAs(new Blob([wbout], {type: 'application/octet-stream'}), 'fileName.xlsx')
+            } catch (e) {
+                if (typeof console !== 'undefined') {
+                    console.log(e, wbout)
+                }
+            }
+            return wbout
         }
     },
   }
