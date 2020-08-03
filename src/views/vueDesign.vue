@@ -59,13 +59,13 @@
             //     this.chanDara = [];
             // },
             dele(value) {
-                // console.log(value)
+                console.log(value)
                 this.chanDara = [];
             }
         },
         watch: {
-            cascaderValue(val) {
-                console.log(val)
+            cascaderValue() {
+                // console.log(val)
             } 
         }
     }
